@@ -5,8 +5,10 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.hashers import make_password
 
 
+
+
 class UserSerializer(serializers.ModelSerializer):
-    userName= serializers.CharField(
+    user_name= serializers.CharField(
         allow_null = True,
         validators = [UniqueValidator(queryset=User.objects.all())]
     )
@@ -22,22 +24,22 @@ class UserSerializer(serializers.ModelSerializer):
         validators = [validate_password]
     )
 
-    passwordConfirm = serializers.CharField(
+    password_confirm = serializers.CharField(
         write_only=True, 
         allow_null = True
     )
 
     class Meta:
         model = User
-        fields = ('userName', 'email', 'password', 'passwordConfirm', 'type')
+        fields = ('user_name', 'email', 'password', 'password_confirm', 'type')
 
     def validatePassword(self, attrs):
-        if attrs.get('password') != attrs.get('passwordConfirm'):
+        if attrs.get('password') != attrs.get('password_confirm'):
             raise serializers.ValidationError({"password": "Password fields did not match."})
         return attrs
     
     def create(self, validatedData):
-        del validatedData['passwordConfirm']
+        del validatedData['password_confirm']
         password = make_password(validatedData.pop('password'))
 
         # operator (**) to unpack the remaining elements from validated_data into keyword arguments for the User model constructor. 
@@ -54,7 +56,3 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
-    def validateUsername(self, instance):
-        userName = instance['userName']
-        password = instance['password']
-        

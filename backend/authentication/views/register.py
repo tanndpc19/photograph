@@ -16,9 +16,9 @@ def register(request):
     try:
         allData = request.data
         newUserData = {
-            'userName': allData['userName'],
+            'user_name': allData['user_name'],
             'password': allData['password'],
-            'passwordConfirm': allData['passwordConfirm'],
+            'password_confirm': allData['password_confirm'],
             'email': allData['email'],
             'type': User.PUBLIC_ACCOUNT,
 
@@ -41,7 +41,7 @@ def register(request):
         data = {
             'status': "True",
             'email': user.email,
-            'userName': user.userName,
+            'user_name': user.user_name,
         }
         return Response(data = data, status = status.HTTP_200_OK)
 

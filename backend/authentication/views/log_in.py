@@ -5,7 +5,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from django.contrib.auth.hashers import check_password
 
-from ..token import create_access_token, create_refresh_token
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -18,7 +17,7 @@ def log_in(resquest):
     try:
         user_data = resquest.data
         # check userName
-        user = User.objects.filter(userName = user_data['userName']).first()
+        user = User.objects.filter(user_name = user_data['user_name']).first()
         if user is None:
             return Response(data={"status": "False", "message": "Username does not exist"}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -29,27 +28,14 @@ def log_in(resquest):
         # gen token
         refresh_token = RefreshToken.for_user(user)
         data = {
-            "access_token": str(refresh_token.access_token),
-            "user": {
-                "id": user.id,
-                "userName": user.userName,
-                "email": user.email
-            }
+            "access_token": str(refresh_token.access_token)
+            # "user": {
+            #     "id": user.id,
+            #     "userName": user.userName,
+            #     "email": user.email
+            # }
         }
         return Response(data = data, status = status.HTTP_200_OK)
     except Exception as e:
         return Response(data={"status": "False", "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-    
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def log_out(request):
-    response = Response()
-    response.delete_cookie('access_token')
-    response.delete_cookie('refresh_token')
-    response.data = {
-        'status': "True",
-        'message': "Success"
-    }
-    response.status_code = status.HTTP_200_OK
-    return response

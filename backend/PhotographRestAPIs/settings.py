@@ -37,13 +37,14 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-        # 'rest_framework_simplejwt.is_authenticated'
     ),
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
 }
 
 # Application definition
@@ -60,11 +61,9 @@ INSTALLED_APPS = [
     # CORS
     'corsheaders',
     # auth token
-    # 'rest_framework.authtoken',
-
     'authentication',
-    # 'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 
 ]
 
@@ -97,6 +96,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'authentication.User'
 
 WSGI_APPLICATION = 'PhotographRestAPIs.wsgi.application'
 
